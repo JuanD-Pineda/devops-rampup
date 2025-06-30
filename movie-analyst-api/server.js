@@ -13,7 +13,7 @@ const pool = mysql.createPool({
 pool.query = util.promisify(pool.query)
 
 // Implement the movies API endpoint
-app.get('/movies', async function (req, res) {
+app.get('/api/movies', async function (req, res) {
   try {
     const rows = await pool.query(
       'select m.title, m.release_year, m.score, r.name as reviewer, p.name as publication from movies m,' +
@@ -26,7 +26,7 @@ app.get('/movies', async function (req, res) {
   }
 })
 
-app.get('/reviewers', async function (req, res) {
+app.get('/api/reviewers', async function (req, res) {
   try {
     const rows = await pool.query('select r.name, r.publication, r.avatar from reviewers r')
     res.json(rows)
@@ -36,7 +36,7 @@ app.get('/reviewers', async function (req, res) {
   }
 })
 
-app.get('/publications', async function (req, res) {
+app.get('/api/publications', async function (req, res) {
   try {
     const rows = await pool.query('select r.name, r.publication, r.avatar from reviewers r')
     res.json(rows)
@@ -46,7 +46,7 @@ app.get('/publications', async function (req, res) {
   }
 })
 
-app.get('/pending', async function (req, res) {
+app.get('/api/pending', async function (req, res) {
   try {
     const rows = await pool.query(
       'select m.title, m.release, m.score, r.name as reviewer, p.name as publication' +
@@ -61,6 +61,10 @@ app.get('/pending', async function (req, res) {
 })
 
 app.get('/', function (req, res) {
+  res.status(200).send({'service_status': 'Up'})
+})
+
+app.get('/api', function (req, res) {
   res.status(200).send({'service_status': 'Up'})
 })
 
