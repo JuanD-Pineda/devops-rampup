@@ -1,4 +1,5 @@
 // Declare our dependencies
+require('dotenv').config()
 var express = require('express');
 var request = require('superagent');
 
