@@ -13,6 +13,46 @@ async function main () {
     })
     pool.query = util.promisify(pool.query)
 
+    // Crear tablas si no existen
+    console.log('Creando tablas si no existen...')
+    
+    const createPublicationsTable = `
+      CREATE TABLE IF NOT EXISTS publications (
+        name VARCHAR(255) PRIMARY KEY,
+        avatar VARCHAR(255)
+      )
+    `
+    await pool.query(createPublicationsTable)
+
+    const createReviewersTable = `
+      CREATE TABLE IF NOT EXISTS reviewers (
+        name VARCHAR(255) PRIMARY KEY,
+        publication VARCHAR(255),
+        avatar VARCHAR(255),
+        FOREIGN KEY (publication) REFERENCES publications(name)
+      )
+    `
+    await pool.query(createReviewersTable)
+
+    const createMoviesTable = `
+      CREATE TABLE IF NOT EXISTS movies (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(255),
+        release_year INT,
+        score INT,
+        reviewer VARCHAR(255),
+        publication VARCHAR(255),
+        FOREIGN KEY (reviewer) REFERENCES reviewers(name),
+        FOREIGN KEY (publication) REFERENCES publications(name)
+      )
+    `
+    await pool.query(createMoviesTable)
+
+    console.log('Tablas creadas exitosamente')
+
+    // Insertar datos
+    console.log('Insertando datos...')
+
     const publicationsQuery = 'INSERT IGNORE INTO publications (name, avatar) VALUES ?'
     const publicationsValues = [
       ['The Daily Reviewer', 'glyphicon-eye-open'],
